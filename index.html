@@ -41,18 +41,21 @@
       justify-content: center;
       letter-spacing: 0.5px;
     }
-    .big-text {
-      font-size: 1.45em;
-      font-weight: 600;
+    .timer-block {
       text-align: center;
       margin-bottom: 17px;
-      line-height: 1.2;
+      margin-top: 2px;
+    }
+    .timer-text {
+      font-size: 1.45em;
+      font-weight: 600;
       color: #ee2222;
     }
     .highlight-text {
       color: #ee2222;
       font-weight: 700;
       font-size: 1.02em;
+      margin-left: 5px;
     }
     .tab-controls {
       display: flex;
@@ -162,7 +165,7 @@
         padding: 0 9vw 86px 9vw;
       }
       .header { font-size: 1.22em; padding-top: 13px;}
-      .big-text { font-size: 1.17em; }
+      .timer-text { font-size: 1.17em; }
       .section { margin: 15px 0 9px 0;}
       .row { font-size: 1.09em; gap: 9px; margin-top: 8px;}
       .qr-block img { width: 88vw; max-width: 99vw; min-width: 95px;}
@@ -178,6 +181,12 @@
     <span class="icon"><i class="fas fa-times"></i></span>
     Городской Транспорт
   </div>
+  
+  <!-- ОБЩИЙ таймер -->
+  <div class="timer-block">
+    <span class="timer-text">Действует: <span class="highlight-text" id="timer">15</span> сек.</span>
+  </div>
+
   <!-- Tabs -->
   <div class="tab-controls">
     <div class="tab active" id="tab-ticket" onclick="showPage('ticket')">
@@ -191,7 +200,6 @@
   </div>
   <!-- Ticket Page -->
   <div id="page-ticket">
-    <div class="big-text">Действует: <span class="highlight-text">11 сек.</span></div>
     <div class="section">
       <div class="row gray"><span class="icon"><i class="fa-solid fa-user-shield"></i></span>Перевозчик</div>
       <div class="row" style="margin-bottom: 7px;">ИП Гальченкова Е. А.</div>
@@ -213,7 +221,6 @@
   </div>
   <!-- QR Page -->
   <div id="page-qr" style="display:none;">
-    <div class="big-text">Действует: <span class="highlight-text">13 сек.</span></div>
     <div class="qr-block">
       <img src="https://api.qrserver.com/v1/create-qr-code/?data=1286452855&size=190x190" alt="QR-код">
       <div class="qr-num">№ 1 286 452 855</div>
@@ -222,6 +229,19 @@
   <button class="close-btn">ЗАКРЫТЬ</button>
 </div>
 <script>
+  // Таймер обратного отсчёта
+  let sec = 15;
+  let timerEl = document.getElementById('timer');
+  let timerInterval = setInterval(function(){
+    sec--;
+    if(sec < 0) {
+      sec = 0;
+      clearInterval(timerInterval);
+    }
+    timerEl.textContent = sec;
+  }, 1000);
+
+  // Переключение вкладок
   function showPage(page) {
     if(page === 'ticket'){
       document.getElementById('page-ticket').style.display = '';

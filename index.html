@@ -1,81 +1,197 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
-		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<meta name="mobile-web-app-capable" content="yes" />
-		<style type="text/css" title="Default">
-			/* fullscreen */
-			html {
-				height:100%;
-			}
-			body {
-				height:100%;
-				margin: 0px;
-				overflow:hidden; /* disable scrollbars */
-				-webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* remove highlight on tab for iOS/Android */
-			}
-			/* fix for scroll bars on webkit & >=Mac OS X Lion */ 
-			::-webkit-scrollbar {
-				background-color: rgba(0,0,0,0.5);
-				width: 0.75em;
-			}
-			::-webkit-scrollbar-thumb {
-    			background-color:  rgba(255,255,255,0.5);
-			}
-		</style>	
-	</head>
-	<body>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - -->
-		<script type="text/javascript" src="pano2vr_player.js">
-		</script>
-		<script src="webxr/three.min.js"></script>
-		<script src="webxr/webxr-polyfill.min.js"></script>
-		<div id="container" style="width:100%;height:100%;overflow:hidden;">
-		<br>Loading...<br><br>
-		</div>
-		<script type="text/javascript">
-	
-			// create the panorama player with the container
-			pano=new pano2vrPlayer("container");
-			// load the configuration
-		
-			window.addEventListener("load", function() {
-				pano.readConfigUrlAsync("pano.xml");
-			});
-			if (window.navigator.userAgent.match(/Safari/i)) {
-				// fix for white borders, rotation on iPhone
-				function iosHfix(e) {
-					window.scrollTo(0, 1);
-					var container=document.getElementById("container");
-					var oh=container.offsetHeight;
-					document.documentElement.style.setProperty('height', '100vh');
-					if (oh!=container.offsetHeight) {
-						container.style.setProperty('height',"100%");
-					} else {
-						container.style.setProperty('height',window.innerHeight+"px");
-					}
-					window.scrollTo(0, 0);
-					pano.setViewerSize(container.offsetWidth, container.offsetHeight);
-				};
-				setTimeout(iosHfix,0);	
-				setTimeout(iosHfix,100);	
-				window.addEventListener("resize", function() {
-					setTimeout(iosHfix,0);
-					// hide toolbar on iPad happens with a delay
-					setTimeout(iosHfix,500);
-					setTimeout(iosHfix,1000);
-					setTimeout(iosHfix,2000);
-				});
-			}
-		</script>
-		<noscript>
-			<p><b>Please enable Javascript!</b></p>
-		</noscript>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - --> 
-	</body>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Городской Транспорт</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      background: #232c39;
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #fff;
+    }
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      padding-bottom: 80px;
+      min-height: 98vh;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5em;
+      font-weight: bold;
+      padding: 18px 0 8px 0;
+      justify-content: center;
+    }
+    .big-text {
+      font-size: 2em;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .highlight-text {
+      color: #f56a6a;
+      font-weight: 700;
+      font-size: 1.25em;
+    }
+    .tab-controls {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .tab-controls .tab {
+      padding-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #fff;
+      opacity: 0.85;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-controls .tab.active {
+      color: #f56a6a;
+      font-weight: bold;
+      border-bottom: 3px solid #f56a6a;
+      opacity: 1;
+    }
+    .section {
+      margin: 18px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #354154;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .row .icon {
+      width: 25px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    .gray {
+      color: #bec4cf;
+      font-size: 0.97em;
+    }
+    .time {
+      font-size: 1.15em;
+      margin-left: 32px;
+      margin-top: 0;
+    }
+    .qr-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 50px 0 25px 0;
+    }
+    .qr-block img {
+      width: 220px;
+      height: 220px;
+      background: #fff;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .qr-num {
+      color:#ccc;
+      font-size:1.4em;
+      font-weight:500;
+      margin-top:12px;
+    }
+    .close-btn {
+      position: fixed;
+      left: 0; bottom: 0;
+      width: 100%;
+      max-width: 420px;
+      background: #ee2222;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 1.25em;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <span class="icon"><i class="fas fa-times"></i></span>
+    Городской Транспорт
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-controls">
+    <div class="tab active" id="tab-ticket" onclick="showPage('ticket')">
+      <i class="fa-regular fa-file"></i>
+      <span>1 286 452 855</span>
+    </div>
+    <div class="tab" id="tab-control" onclick="showPage('qr')">
+      <i class="fa-solid fa-user-shield"></i>
+      <span>Контроль</span>
+    </div>
+  </div>
+
+  <!-- Ticket Page -->
+  <div id="page-ticket">
+    <div class="big-text">Действует: <span class="highlight-text">11 сек.</span></div>
+    <div class="section">
+      <div class="row gray"><span class="icon"><i class="fa-solid fa-user-shield"></i></span>Перевозчик</div>
+      <div class="row" style="margin-bottom: 5px;">ИП Гальченкова Е. А.</div>
+      <div class="row gray"><span class="icon"><i class="fa-solid fa-bus"></i></span>Дом ученых – А/В Восточный</div>
+      <div class="row">м880кк124</div>
+    </div>
+    <div class="section">
+      <div class="row gray"><span class="icon"><i class="fa-solid fa-ruble-sign"></i></span>Стоимость</div>
+      <div class="row">1 шт., Полный, 48.00 ₽</div>
+    </div>
+    <div class="section">
+      <div class="row gray"><span class="icon"><i class="fa-regular fa-calendar"></i></span>Дата покупки</div>
+      <div class="row">05 ноября 2025 г.</div>
+    </div>
+    <div class="section">
+      <div class="row gray"><span class="icon"><i class="fa-regular fa-clock"></i></span>Время покупки</div>
+      <div class="row time">12:20</div>
+    </div>
+  </div>
+
+  <!-- QR Page -->
+  <div id="page-qr" style="display:none;">
+    <div class="big-text">Действует: <span class="highlight-text">13 сек.</span></div>
+    <div class="qr-block">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=1286452855&size=220x220" alt="QR-код">
+      <div class="qr-num">№ 1 286 452 855</div>
+    </div>
+  </div>
+
+  <button class="close-btn">ЗАКРЫТЬ</button>
+</div>
+
+<script>
+  function showPage(page) {
+    if(page === 'ticket'){
+      document.getElementById('page-ticket').style.display = '';
+      document.getElementById('page-qr').style.display = 'none';
+      document.getElementById('tab-ticket').classList.add('active');
+      document.getElementById('tab-control').classList.remove('active');
+    } else {
+      document.getElementById('page-ticket').style.display = 'none';
+      document.getElementById('page-qr').style.display = '';
+      document.getElementById('tab-control').classList.add('active');
+      document.getElementById('tab-ticket').classList.remove('active');
+    }
+  }
+</script>
+</body>
 </html>
